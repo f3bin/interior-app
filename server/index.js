@@ -59,10 +59,13 @@ const upload = multer({
 
 app.post('/upload', upload.single('photo'), (req, res) => {
     console.log(req.file.filename)
+    const title = req.body.title;
+    const price = req.body.price;
     const fileUploaded = req.file.filename
-    db.query('insert into img_tb values(?,?)', [0, fileUploaded], (err, result) => {
+    console.log(title,price)
+    db.query('insert into img_tb values(?,?,?,?)', [0 ,fileUploaded ,title,price], (err, result) => {
         if (err) throw err;
-        res.send({ 'msg': 'image uploaded succesfully' })
+        res.send({ 'msg': 'List uploaded succesfully' })
     })
 });
 
@@ -72,6 +75,20 @@ app.get('/viewUploads',(req,res)=>{
         res.send({'imgData':result})
     })
 })
+
+app.post('/cartUpload',(req,res)=>{
+    const title = req.body.title
+    const price = req.body.price
+    const qty = req.body.qty
+    const userName = req.body.userName
+    const date =req.body.date
+    console.log(title,price,qty,userName,date)
+    db.query('insert into cart_tbl values(?,?,?,?,?,?)',[0,title,userName,qty,date,price],(err,result)=>{
+        if (err) throw err;
+        res.send({'msg':'Item added to cart Succesfully'})
+    })
+})
+
 
 app.post('/create', (req, res) => {
     var RegUser = req.body.user;
